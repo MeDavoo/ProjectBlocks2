@@ -1733,15 +1733,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aeb1b4216a26494da4a45a25228bc59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController.PlayerController
-  maxSpeed: 8
+  maxSpeed: 15
   acceleration: 80
-  groundDeceleration: 70
+  groundDeceleration: 60
   airDeceleration: 30
-  jumpPower: 18
-  coyoteTime: 0.12
+  jumpPower: 35
+  coyoteTime: 0.08
   jumpBuffer: 0.12
-  fallAcceleration: 65
-  maxFallSpeed: 30
+  fallAcceleration: 100
+  maxFallSpeed: 43
   jumpEndEarlyGravityModifier: 3
   groundingForce: -1.5
   groundLayer:
