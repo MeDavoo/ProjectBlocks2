@@ -7,25 +7,25 @@ namespace PlayerController
     public class PlayerController : MonoBehaviour
     {
         [Header("Movement")]
-        [SerializeField] private float maxSpeed = 8f;
-        [SerializeField] private float acceleration = 80f;
-        [SerializeField] private float groundDeceleration = 70f;
+        [SerializeField] private float maxSpeed = 12f;
+        [SerializeField] private float acceleration = 120f;
+        [SerializeField] private float groundDeceleration = 75f;
         [SerializeField] private float airDeceleration = 30f;
 
         [Header("Jump")]
-        [SerializeField] private float jumpPower = 18f;
-        [SerializeField] private float coyoteTime = 0.12f;
+        [SerializeField] private float jumpPower = 30f;
+        [SerializeField] private float coyoteTime = 0.08f;
         [SerializeField] private float jumpBuffer = 0.12f;
 
         [Header("Gravity")]
-        [SerializeField] private float fallAcceleration = 65f;
-        [SerializeField] private float maxFallSpeed = 30f;
+        [SerializeField] private float fallAcceleration = 100f;
+        [SerializeField] private float maxFallSpeed = 35f;
         [SerializeField] private float jumpEndEarlyGravityModifier = 3f;
         [SerializeField] private float groundingForce = -1.5f;
 
         [Header("Collision")]
         [SerializeField] private LayerMask groundLayer;
-        [SerializeField] private float grounderDistance = 0.05f;
+        [SerializeField] private float grounderDistance = 0.1f;
 
         // Components
         private Rigidbody2D _rb;
@@ -73,16 +73,18 @@ namespace PlayerController
         {
             if (value.isPressed)
             {
-                _jumpPressed    = true;
-                _jumpToConsume  = true;
-                _timeJumpWasPressed = _time;
-            }
-            _jumpHeld = value.isPressed;
-        }
+                Debug.Log("JUMP PRESSED");
 
-        public void OnJumpCanceled(InputValue value)
-        {
-            _jumpHeld = false;
+                _jumpToConsume = true;
+                _timeJumpWasPressed = _time;
+                _jumpHeld = true;
+            }
+            else
+            {
+                Debug.Log("JUMP RELEASED");
+
+                _jumpHeld = false;
+            }
         }
 
         // ── Main loop ───────────────────────────────────────────────────────
