@@ -207,7 +207,7 @@ MonoBehaviour:
     m_Value: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.654
+    m_Value: 0
   response:
     m_OverrideState: 1
     m_Value: 0.567
@@ -487,7 +487,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: DefaultVolumeProfile
+  m_Name: PlayerVolumeProfile
   m_EditorClassIdentifier: 
   components:
   - {fileID: 1247868777620691934}
@@ -606,7 +606,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.327
+    m_Value: 0.216
   xMultiplier:
     m_OverrideState: 1
     m_Value: 1
@@ -618,7 +618,7 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   scale:
     m_OverrideState: 1
-    m_Value: 1.03
+    m_Value: 1.05
 --- !u!114 &2338690907228448291
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -739,7 +739,7 @@ MonoBehaviour:
     m_Value: 0
   contrast:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 5
   colorFilter:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
@@ -748,7 +748,7 @@ MonoBehaviour:
     m_Value: 0
   saturation:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 10
 --- !u!114 &8549655192814258499
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -770,10 +770,10 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.382
+    m_Value: 0.438
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.383
   rounded:
     m_OverrideState: 1
     m_Value: 0
