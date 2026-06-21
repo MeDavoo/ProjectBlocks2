@@ -4,7 +4,7 @@ using TMPro;
 
 public class PowerDisplayUI : MonoBehaviour
 {
-    [SerializeField] private PlayerPowerController power;
+    [SerializeField] private BuilderPowerController power;
 
     [Header("Optional - assign whichever you're using")]
     [SerializeField] private TextMeshProUGUI powerText;

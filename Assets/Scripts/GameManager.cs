@@ -1,33 +1,45 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
+using Unity.Cinemachine;
 
-// The single source of truth for "is this player currently Player or God."
-// Press Tab to switch. This is what decides which controller script gets to
-// run, and swaps the Cinemachine camera to match.
+// Solo testing lets one person flip between Player and Builder with Tab.
+// Real co-op doesn't — each person stays in their own role the whole game.
 //
-// Later (multiplayer): each player would get their own GameManager +
-// GodController + movement script. The only extra rule needed at that point
-// is "both players can't be God at once" — that's a small check to add to
-// OnTogglePressed later, not a redesign.
+// IsMultiplayer is exposed as a static so ANY script can check it without
+// needing a direct reference to this GameManager
 public class GameManager : MonoBehaviour
 {
-    public enum Mode { Player, God }
+    public enum Focus { Player, Builder }
 
-    [Header("Camera (Cinemachine State-Driven Camera's Animator)")]
-    [SerializeField] private Animator cameraAnimator;
+    [Header("Mode")]
+    [Tooltip("OFF = solo testing, Tab swaps focus between Player and Builder.\nON = real co-op, each player stays in their own role, Tab does nothing.")]
+    [SerializeField] private bool isMultiplayer = false;
+
+    // Mirrors isMultiplayer so other scripts can check it without a reference to this object.
+    public static bool IsMultiplayer { get; private set; }
+
+    [Header("Cameras")]
+    [SerializeField] private CinemachineCamera playerCamera;
+    [SerializeField] private CinemachineCamera builderCamera;
 
     [Header("Controllers")]
-    [SerializeField] private GodController godController;
-    [SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerController playerController;   // the Player's movement
+    [SerializeField] private BuilderController builderController; // the Builder's hand/mouse control
 
-    [Header("UI (swaps based on mode)")]
+    [Header("UI (swaps based on focus)")]
     [SerializeField] private GameObject playerGUI;
-    [SerializeField] private GameObject godGUI;
+    [SerializeField] private GameObject builderGUI;
 
-    [Header("Input")]
+    [Header("Input (solo testing only)")]
     [SerializeField] private InputAction toggleAction;
 
-    public Mode CurrentMode { get; private set; } = Mode.Player;
+    public Focus CurrentFocus { get; private set; } = Focus.Player;
+
+    private void Awake()
+    {
+        IsMultiplayer = isMultiplayer;
+    }
 
     private void OnEnable()
     {
@@ -43,28 +55,37 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ApplyMode();
+        ApplyFocus();
     }
 
     private void OnTogglePressed(InputAction.CallbackContext ctx)
     {
-        CurrentMode = CurrentMode == Mode.Player ? Mode.God : Mode.Player;
-        ApplyMode();
+        if (isMultiplayer) return; // real co-op: roles are fixed, ignore Tab entirely
+
+        CurrentFocus = CurrentFocus == Focus.Player ? Focus.Builder : Focus.Player;
+        Debug.Log($"Current Focus = {CurrentFocus}");
+        ApplyFocus();
     }
 
-    private void ApplyMode()
+    public void SetFocus(Focus focus)
     {
-        bool isGod = CurrentMode == Mode.God;
+        if (isMultiplayer) return;
 
-        cameraAnimator.Play(isGod ? "GodCamera" : "PlayerCamera");
+        CurrentFocus = focus;
+        ApplyFocus();
+    }
 
-        if (playerController != null)
-            playerController.SetMovementLocked(isGod);
+    private void ApplyFocus()
+    {
+        bool builderFocused = CurrentFocus == Focus.Builder;
 
-        if (godController != null)
-            godController.enabled = isGod;
+        playerCamera.Priority = builderFocused ? 0 : 100;
+        builderCamera.Priority = builderFocused ? 100 : 0;
 
-        if (playerGUI != null) playerGUI.SetActive(!isGod);
-        if (godGUI != null) godGUI.SetActive(isGod);
+        playerController.SetMovementLocked(builderFocused);
+        builderController.SetInputEnabled(builderFocused);
+
+        playerGUI.SetActive(!builderFocused);
+        builderGUI.SetActive(builderFocused);
     }
 }

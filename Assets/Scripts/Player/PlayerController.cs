@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private GameManager gameManager;
+
     [Header("Movement")]
     [SerializeField] private float maxSpeed = 12f;
     [SerializeField] private float acceleration = 120f;
@@ -35,6 +37,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float grounderDistance = 0.1f;
 
+    [Header("Builder Carry")]
+    [Tooltip("Empty child Transform positioned on the Player's back — the Builder snaps here while being carried.")]
+    [SerializeField] private Transform builderCarrySlot;
+
+    [Header("Builder Throw")]
+    [SerializeField] private BuilderController builderController;
+    [SerializeField] private Key throwKey = Key.G;
+    [Tooltip("Throw strength with a tap (held for ~0 seconds).")]
+    [SerializeField] private float minThrowForce = 8f;
+    [Tooltip("Throw strength at full charge.")]
+    [SerializeField] private float maxThrowForce = 25f;
+    [Tooltip("How long you need to hold the throw key to reach max force.")]
+    [SerializeField] private float maxChargeTime = 1.2f;
+    [Tooltip("Degrees above horizontal the Builder gets tossed — 0 = straight forward, 90 = straight up.")]
+    [SerializeField] private float throwAngle = 45f;
+
     // Components
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
@@ -42,7 +60,6 @@ public class PlayerController : MonoBehaviour
     // State
     private Vector2 _frameVelocity;
     private Vector2 _moveInput;
-    private bool _jumpPressed;
     private bool _jumpHeld;
     private bool _sprinting;
     private bool _onWall;
@@ -59,6 +76,10 @@ public class PlayerController : MonoBehaviour
     private float _time;
     private bool _movementLocked;
 
+    // Throw internals
+    private int _facingDirection = 1; // 1 = right, -1 = left
+    private float _throwCharge;
+
     // Helpers
     private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + jumpBuffer;
     private bool CanUseCoyote   => _coyoteUsable && !_grounded && _time < _timeLeftGround + coyoteTime;
@@ -66,12 +87,27 @@ public class PlayerController : MonoBehaviour
     // ── Public read-only state ──────────────────────────────────────────
     public bool IsGrounded => _grounded;
     public Vector2 Velocity => _rb.linearVelocity;
+    public int FacingDirection => _facingDirection;
+
+    // 0-1, how charged the current throw is — handy later for a charge-bar UI.
+    public float ThrowChargeRatio => Mathf.Clamp01(_throwCharge / maxChargeTime);
+
+    // Builder carry — useful later for animations (e.g. a "carrying" pose/anim trigger).
+    public Transform BuilderCarrySlot => builderCarrySlot;
+    public bool IsCarryingBuilder { get; private set; } = true; // Builder starts the game riding on the Player's back
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<CapsuleCollider2D>();
         _rb.gravityScale = 0f; //we aint using unity default gravity, so disabled
+    }
+
+    // called by BuilderController when recalled or thrown
+    public void SetCarryingBuilder(bool isCarried)
+    {
+        IsCarryingBuilder = isCarried;
+        // todo: hook animation trigger here, e.g. animator.SetBool("CarryingBuilder", isCarried);
     }
 
     // ── Unity Input System ────────────────────────────────────────
@@ -110,6 +146,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _time += Time.deltaTime;
+        HandleThrowInput();
     }
 
     private void FixedUpdate()
@@ -119,9 +156,57 @@ public class PlayerController : MonoBehaviour
         HandleHorizontal();
         HandleGravity();
         ApplyMovement();
-
-        _jumpPressed = false;
     }
+
+    // ── Builder Throw ────────────────────────────────────────────────────
+    private void HandleThrowInput()
+    {
+        if (_movementLocked || Keyboard.current == null) return;
+
+        bool keyHeld = Keyboard.current[throwKey].isPressed;
+        bool keyReleased = Keyboard.current[throwKey].wasReleasedThisFrame;
+
+        if (keyHeld && IsCarryingBuilder)
+        {
+            _throwCharge = Mathf.Min(_throwCharge + Time.deltaTime, maxChargeTime);
+        }
+
+        if (keyReleased)
+        {
+            if (_throwCharge > 0f && IsCarryingBuilder)
+            {
+                ThrowBuilder();
+            }
+            _throwCharge = 0f;
+        }
+    }
+
+    private void ThrowBuilder()
+    {
+        if (builderController == null) return;
+
+        builderController.Launch(ComputeThrowVelocity(ThrowChargeRatio));
+
+        if (!GameManager.IsMultiplayer && gameManager != null)
+        {
+            gameManager.SetFocus(GameManager.Focus.Builder);
+        }
+    }
+
+    // throw velocity at a given charge ratio, no actual throw - used by
+    // the real throw and the trajectory preview so they stay in sync
+    private Vector2 ComputeThrowVelocity(float chargeRatio)
+    {
+        float force = Mathf.Lerp(minThrowForce, maxThrowForce, chargeRatio);
+
+        float angleRad = throwAngle * Mathf.Deg2Rad;
+        Vector2 throwDir = new Vector2(Mathf.Cos(angleRad) * _facingDirection, Mathf.Sin(angleRad));
+
+        return throwDir * force;
+    }
+
+    // current would-be throw velocity, for the trajectory preview
+    public Vector2 PreviewThrowVelocity => ComputeThrowVelocity(ThrowChargeRatio);
 
     // ── Collisions ──────────────────────────────────────────────────────
     private void CheckCollisions()
@@ -240,7 +325,11 @@ public class PlayerController : MonoBehaviour
     {
         float moveX = _moveInput.x;
 
-        // If on a wall, ignore movement pushing INTO the wall
+        // Track which way the player is facing, used by the Builder throw.
+        if (moveX > 0f) _facingDirection = 1;
+        else if (moveX < 0f) _facingDirection = -1;
+
+        // if on a wall, ignore movement pushing into the wall
         if (_onWall)
         {
             if ((_wallDirection == 1 && moveX > 0f) ||   // right wall + holding right
@@ -316,6 +405,11 @@ public class PlayerController : MonoBehaviour
     // ── Freeze Inputs ───────────────────────────────────────────────────────────
     public void SetMovementLocked(bool locked)
     {
+        // In real co-op, movement never locks — each player always controls
+        // their own character. Locking is a solo-only
+        if (GameManager.IsMultiplayer)
+            locked = false;
+
         Debug.Log($"Movement Locked: {locked}");
         _movementLocked = locked;
 

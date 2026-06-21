@@ -4622,37 +4622,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &457405707
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 457405708}
-  m_Layer: 7
-  m_Name: CarrySlot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &457405708
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 457405707}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.39, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1759906796}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &458299692
 GameObject:
   m_ObjectHideFlags: 0
@@ -28611,60 +28580,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &1258807403
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1258807404}
-  - component: {fileID: 1258807405}
-  m_Layer: 7
-  m_Name: Trajectory
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1258807404
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258807403}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1759906796}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1258807405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258807403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0f5204e1571b5743b0ac5f61dcc9100, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ThrowTrajectory
-  playerController: {fileID: 1759906794}
-  builderController: {fileID: 1979833759}
-  dotCount: 18
-  timeStep: 0.07
-  dotWorldSize: 0.15
-  dotColor: {r: 1, g: 1, b: 1, a: 1}
-  sortingLayerName: Default
-  sortingOrder: 100
-  dotLayerName: Default
-  stopAtGround: 1
 --- !u!114 &1265148100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40987,15 +40902,13 @@ GameObject:
   - component: {fileID: 1759906796}
   - component: {fileID: 1759906795}
   - component: {fileID: 1759906794}
-  - component: {fileID: 1759906799}
-  - component: {fileID: 1759906800}
   - component: {fileID: 1759906797}
   - component: {fileID: 1759906793}
   - component: {fileID: 1759906792}
   - component: {fileID: 1759906798}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Player
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41096,8 +41009,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   grounderDistance: 0.28
-  builderCarrySlot: {fileID: 457405708}
-  builderController: {fileID: 1979833759}
+  builderCarrySlot: {fileID: 0}
+  builderController: {fileID: 0}
   throwKey: 21
   minThrowForce: 8
   maxThrowForce: 25
@@ -41176,8 +41089,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1954214356}
-  - {fileID: 457405708}
-  - {fileID: 1258807404}
   m_Father: {fileID: 623950015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1759906797
@@ -41247,35 +41158,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.000000047246026, y: -0.89632857}
   m_Size: {x: 1.0000001, y: 0.20734313}
   m_Direction: 1
---- !u!114 &1759906799
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1759906791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa0c4958ad95c0740959ea9067e05271, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerPowerController
-  maxPower: 100
-  startingPower: 50
---- !u!114 &1759906800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1759906791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3c8381b611d56e40b24cc4158b2f5d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PowerDisplayUI
-  power: {fileID: 1759906799}
-  powerText: {fileID: 0}
-  powerBar: {fileID: 152795185}
 --- !u!1 &1776751158
 GameObject:
   m_ObjectHideFlags: 0
@@ -43305,7 +43187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1954214356}
   - component: {fileID: 1954214355}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Global Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43756,9 +43638,11 @@ GameObject:
   - component: {fileID: 1979833759}
   - component: {fileID: 1979833762}
   - component: {fileID: 1979833761}
-  m_Layer: 8
+  - component: {fileID: 1979833764}
+  - component: {fileID: 1979833763}
+  m_Layer: 0
   m_Name: Builder
-  m_TagString: Builder
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43790,13 +43674,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7da03d97de7963d4aa27414caa9575df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderController
-  playerController: {fileID: 1759906794}
+  playerController: {fileID: 0}
   builderCamera: {fileID: 340391508}
   handTransform: {fileID: 256961582}
   fallAcceleration: 120
   maxFallSpeed: 40
   groundingForce: -1.5
-  bounciness: 0.611
+  bounciness: 0.794
   minBounceSpeed: 2
   horizontalDrag: 8
   groundLayer:
@@ -43864,7 +43748,36 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!70 &1979833761
+--- !u!114 &1979833761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979833757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3c8381b611d56e40b24cc4158b2f5d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerDisplayUI
+  power: {fileID: 1979833762}
+  powerText: {fileID: 0}
+  powerBar: {fileID: 152795185}
+--- !u!114 &1979833762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979833757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa0c4958ad95c0740959ea9067e05271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuilderPowerController
+  maxPower: 100
+  startingPower: 50
+--- !u!70 &1979833763
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43898,10 +43811,10 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0011954308, y: 0}
-  m_Size: {x: 0.9933939, y: 1}
+  m_Offset: {x: 0.00031912327, y: 0}
+  m_Size: {x: 0.9976194, y: 1.0001495}
   m_Direction: 0
---- !u!50 &1979833762
+--- !u!50 &1979833764
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -43916,7 +43829,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
