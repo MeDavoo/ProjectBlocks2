@@ -12,6 +12,7 @@ public class ThrowTrajectory : MonoBehaviour
     [SerializeField] private Color dotColor = Color.white;
     [SerializeField] private string sortingLayerName = "Default";
     [SerializeField] private int sortingOrder = 100; // high so it draws above most things
+    [SerializeField] private float gravityMultiplier = 1.05f;
 
     [Header("Visibility (for later split-screen co-op)")]
     [Tooltip("Optional: create a Layer (Project Settings > Tags and Layers) just for this, e.g. \"PlayerOnlyVFX\", " +
@@ -62,7 +63,10 @@ public class ThrowTrajectory : MonoBehaviour
         {
             float t = (i + 1) * timeStep; // skip t=0, that's just the origin/Builder's current spot
 
-            Vector2 point = origin + velocity * t + 0.5f * new Vector2(0f, -gravity) * (t * t);
+            Vector2 point =
+                origin +
+                velocity * t +
+                0.5f * new Vector2(0f, -gravity * gravityMultiplier) * (t * t);
 
             if (stopAtGround && Physics2D.OverlapPoint(point, groundLayer) != null)
             {

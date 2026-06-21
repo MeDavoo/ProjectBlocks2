@@ -31,9 +31,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject playerGUI;
     [SerializeField] private GameObject builderGUI;
 
-    [Header("Input (solo testing only)")]
+    [Header("Input (solo only)")]
     [SerializeField] private InputAction toggleAction;
 
+    [Header("World Objects")]
+    [SerializeField] private GameObject builderGridOverlay;
     public Focus CurrentFocus { get; private set; } = Focus.Player;
 
     private void Awake()
@@ -87,5 +89,7 @@ public class GameManager : MonoBehaviour
 
         playerGUI.SetActive(!builderFocused);
         builderGUI.SetActive(builderFocused);
+
+        builderGridOverlay.SetActive(builderFocused);
     }
 }
