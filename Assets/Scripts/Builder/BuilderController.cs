@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 // hand follows mouse, body physics when not carried, recall with C.
@@ -33,6 +34,13 @@ public class BuilderController : MonoBehaviour
     [Header("Recall")]
     [SerializeField] private Key recallKey = Key.C;
 
+    [Header("Hand Images")]
+    [SerializeField] private Image handImage;
+
+    [SerializeField] private Sprite normalSprite;
+    [SerializeField] private Sprite clickSprite;
+    [SerializeField] private Sprite hoverSprite;
+
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
     private Vector2 _frameVelocity;
@@ -47,6 +55,8 @@ public class BuilderController : MonoBehaviour
     private bool _canStick = true; // goes false after his one stick this flight, reset on recall
     private float _stickTimer;
     private bool _inputEnabled = false;
+
+    private bool _isHoveringBuildArea;
 
     public bool IsGrounded => _grounded;
     public bool IsCarried => _isCarried;
@@ -77,6 +87,8 @@ public class BuilderController : MonoBehaviour
         if (_inputEnabled)
         {
             MoveHandToMouse();
+
+            UpdateHandSprite();
 
             if (Keyboard.current != null &&
                 Keyboard.current[recallKey].wasPressedThisFrame)
@@ -128,9 +140,35 @@ public class BuilderController : MonoBehaviour
         handTransform.position = mouseWorldPos;
     }
 
+    private void UpdateHandSprite()
+    {
+        if (handImage == null)
+            return;
+
+        if (_isHoveringBuildArea)
+        {
+            handImage.sprite = hoverSprite;
+            return;
+        }
+
+        if (Mouse.current != null &&
+            Mouse.current.leftButton.isPressed)
+        {
+            handImage.sprite = clickSprite;
+            return;
+        }
+
+        handImage.sprite = normalSprite;
+    }
+
     public void SetInputEnabled(bool enabled)
     {
         _inputEnabled = enabled;
+    }
+
+    public void SetHoveringBuildArea(bool hovering)
+    {
+        _isHoveringBuildArea = hovering;
     }
 
     // collisions
